@@ -10,7 +10,6 @@
     "configuration" : "Release",
     "framework"     : "netcoreapp1.0",
     "function-name" : "SqsPoller",
-    "function-role" : "arn:aws:iam::554687791201:role/service-role/sqs-poller",
     "function-runtime" : "dotnetcore1.0",
     "function-memory-size" : 128,
     "function-timeout"     : 30,
