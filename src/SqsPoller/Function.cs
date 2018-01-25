@@ -1,3 +1,4 @@
+using System.IO;
 using Amazon.Lambda;
 using Amazon.Lambda.Core;
 using Amazon.SQS;
@@ -14,7 +15,10 @@ namespace SqsPoller
     {
         protected override void Configure(IConfigurationBuilder builder)
         {
-            // Use this method to register your configuration flow. Exactly like in ASP.NET Core
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+
+            builder.AddJsonFile("application.json", optional: true);
+            builder.AddEnvironmentVariables();
         }
 
         protected override void ConfigureLogging(ILoggerFactory loggerFactory, IExecutionEnvironment executionEnvironment)
@@ -24,24 +28,18 @@ namespace SqsPoller
                 IncludeCategory = true,
                 IncludeLogLevel = true,
                 IncludeNewline = true,
-                Filter = (categoryName, logLevel) =>
-                {
-                    return logLevel >= LogLevel.Information;
-                }
+                Filter = (categoryName, logLevel) => logLevel >= LogLevel.Information
             });
         }
 
         protected override void ConfigureServices(IServiceCollection services)
         {
-            // You need this line to register your handler
             RegisterHandler<PollItemEventHandler>(services);
 
             services.AddDefaultAWSOptions(Configuration.GetSection("AWS").GetAWSOptions());
 
             services.AddAWSService<IAmazonSQS>();
             services.AddAWSService<IAmazonLambda>();
-
-            // Use this method to register your services. Exactly like in ASP.NET Core
         }
     }
 }
